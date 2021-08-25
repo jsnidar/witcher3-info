@@ -2,6 +2,7 @@
 //MVP
 let charactersArr = []
 const charactersUrl = `http://witcher3api.com/api/characters`  
+//the API wouldn't let me set a limit on the records it returns because of CORS so I had to create an array and use start and end indexes to limit the number of list items I display
 let startIndex = 0
 let endIndex = startIndex + 29
 let characterAttributes = {gender: [], race: [], profession: [], nationality: [], fappearance: []}
@@ -32,7 +33,7 @@ function renderCharacterList (charactersArr, startIndex, endIndex) {
         if(i > endIndex) {
             break;
         }else{
-            renderOneLi(ul, i)
+            renderOneLi(charactersArr, ul, i)
         }
     }
     renderBackButton(ul)
@@ -41,11 +42,11 @@ function renderCharacterList (charactersArr, startIndex, endIndex) {
     handleCharacterNextButton(charactersArr,startIndex,endIndex)
 }
 
-const renderOneLi = (ul, i) => {
+const renderOneLi = (array, ul, i) => {
     const li = document.createElement('li')
     ul.appendChild(li)
-    li.innerText = charactersArr[i].name
-    li.id = charactersArr[i].id
+    li.innerText = array[i].name
+    li.id = array[i].id
     startIndex = i
     //Event Listener 2: add an event listener to each li
     li.addEventListener('click', event => handleCharLiClick(event))
@@ -189,17 +190,28 @@ function handleSubmit () {
     filterForm = document.querySelector('#filter-form')
     filterForm.addEventListener('submit', e => {
         e.preventDefault()
+        
         const attType = document.querySelector('#type-dropdown')
         const attributeDropdown = document.querySelector('#attribute-dropdown')
         const attValue = attributeDropdown.value
         //clear characters list
         const list = document.querySelector('#characters-list')
-        list.innerHTML = ''
-        charactersArr = []
-        startIndex = 0
-        endIndex = 29
-        sortUrl = charactersUrl + '/' + attType.value + '/' + attValue 
+        if(attValue === 'Male') {
+            //the API returns all genders when you fetch the male gender, so I had to do this instead of the rendering process I used below. 
+            const males = charactersArr.filter(({gender}) => gender === 'Male')
+            debugger
+            list.innerHTML = ''
+            startIndex = 0
+            endIndex = 29
+            renderCharacterList(males, startIndex, endIndex)
+        }else if(attValue !== '') {
+            list.innerHTML = ''
+            charactersArr = []
+            startIndex = 0
+            endIndex = 29
+            sortUrl = charactersUrl + '/' + attType.value + '/' + attValue 
         fetchCharacters(sortUrl, charactersArr, startIndex, endIndex)
+        }  
     })
 }
 

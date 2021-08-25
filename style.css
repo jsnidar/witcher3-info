@@ -1,5 +1,23 @@
-body {
-    font-family: mason-serif, sans-serif;
-    font-style: normal;
-    font-weight: 400;  
+/* body {
+    font-family: 'Montserrat', sans-serif;
+    color: #EAEAEA;
+    background-color: rgb(49, 10, 11)
+} */
+
+/* #filter-form {
+background-color: rgb(39, 39, 39);
+border-style: solid;
+border-width: '5px';
+border-color: #EAEAEA;
+border-radius: '50px'
+} */
+
+h1 {
+    font-family: 'Open Sans', sans-serif;
+
 }
+
+/* .submit {
+    background-color: #EAEAEA;
+    color: rgb(39, 39, 39)
+} */
