@@ -1,28 +1,28 @@
 
 //MVP
-
+let charactersArr = []
+let startIndex = 0
+let endIndex = startIndex + 29
 
 //When DOM Content is loaded fetch characters from the Witcher Api
 document.addEventListener('DOMContentLoaded', () => {
     const charactersUrl = `http://witcher3api.com/api/characters`  
-    let charactersArr = []
+    
 
-    fetchCharacters(charactersUrl, charactersArr)
+
+    fetchCharacters(charactersUrl, charactersArr, startIndex, endIndex)
 })
-function fetchCharacters(url, charactersArr) {
+function fetchCharacters(url, charactersArr, startIndex, endIndex) {
     fetch(url)
     .then(response => response.json())
     .then(characters => {
-        let startIndex = 0
         characters.forEach(character => charactersArr.push(character))
-        renderCharacterList(charactersArr, startIndex)
+        renderCharacterList(charactersArr, startIndex, endIndex)
     })
 }
 
 //Render a list on the left side of the screen of the first 30 characters
-function renderCharacterList (charactersArr, startIndex) {
-    debugger
-    const endIndex = startIndex + 30
+function renderCharacterList (charactersArr, startIndex, endIndex) {
     const ul = document.getElementById('characters-list')
     for(let i = startIndex; i < charactersArr.length; i++) {
         if(i > endIndex) {
@@ -32,12 +32,46 @@ function renderCharacterList (charactersArr, startIndex) {
             ul.appendChild(li)
             li.innerText = charactersArr[i].name
             li.id = charactersArr[i].id
+            startIndex = i
         }
     }
+    const backButton = document.createElement('input')
+    backButton.type = 'button'
+    backButton.id = 'char-back-button'
+    backButton.value = 'Previous Characters'
+    ul.appendChild(backButton)
+    const nextButton = document.createElement('input')
+    nextButton.type = 'button'
+    nextButton.id = 'char-next-button'
+    nextButton.value = 'Next Characters'
+    ul.appendChild(nextButton)
+    handleCharacterBackButton(charactersArr, startIndex, endIndex)
+    handleCharacterNextButton(charactersArr,startIndex,endIndex)
 }
 
 //Event Listener 1: Render back and next buttons to scroll through pages of characters at the bottom of the list
-
+function handleCharacterBackButton() {
+    backButton = document.querySelector('#char-back-button')
+    backButton.addEventListener('click', (event) => {
+        if(startIndex >= 30) {
+            const ul = document.getElementById('characters-list')
+            ul.innerHTML = ''
+            startIndex -= 30
+            endIndex -= 30
+            renderCharacterList(charactersArr,startIndex,endIndex)
+        }
+    })
+}
+function handleCharacterNextButton() {
+    nextButton = document.querySelector('#char-next-button')
+    nextButton.addEventListener('click', (event) => {
+        const ul = document.getElementById('characters-list')
+        ul.innerHTML = ''
+        startIndex += 30
+        endIndex += 30
+        renderCharacterList(charactersArr,startIndex,endIndex)
+    })
+}
 //Event Listener 2: add an event listener to each li, when the li is clicked then the information about that character is rendered to the page in a section
 
 //Event Listener 3: create a form that has a button filter characters
