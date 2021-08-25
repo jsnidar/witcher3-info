@@ -118,6 +118,19 @@ function handleCharacterNextButton() {
             //options: name, gender, race, profession, nationality, appearance
         //text input where they can type in text and search for that attribute name
 
+let characterAttributes = {gender: [], race: [], profession: [], nationality: [], fappearance: []}
+function createObjectOfCharacterAttributeValues () {
+    //iterate through the charactersArr
+        //in each index it will iterate through each key in the character object
+            //for each key in that object
+                //find the key in characterAttributes with the same key
+                    //if the value at the key in the object within the charactersArr is not present in the array at that key in the characterAttributes object
+                        //it will push the value at that key to the array located within the key with the same name
+                    //if the value at the key in the object within the charactersArr is present in the array at that key in the characterAttributes object
+                        //it will continue iterating through the object for that character
+            
+}
+
 
 //Stretch
 
