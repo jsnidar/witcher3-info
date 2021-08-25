@@ -33,6 +33,8 @@ function renderCharacterList (charactersArr, startIndex, endIndex) {
             li.innerText = charactersArr[i].name
             li.id = charactersArr[i].id
             startIndex = i
+            //Event Listener 2: add an event listener to each li
+            li.addEventListener('click', event => handleCharLiClick(event))
         }
     }
     const backButton = document.createElement('input')
@@ -72,7 +74,41 @@ function handleCharacterNextButton() {
         renderCharacterList(charactersArr,startIndex,endIndex)
     })
 }
-//Event Listener 2: add an event listener to each li, when the li is clicked then the information about that character is rendered to the page in a section
+
+//when the li is clicked then the information about that character is rendered to the page in a section
+    function handleCharLiClick(event) {
+        const liId = event.target.id
+        const characterInfo = charactersArr[liId - 1]
+
+        const characterDiv = document.querySelector('#character-info')
+        //create elements
+        const fig = document.createElement('fig')
+        const img = document.createElement('img')
+        const name = document.createElement('h4')
+        const gender = document.createElement('p')
+        const race = document.createElement('p')
+        const profession = document.createElement('p')
+        const nationality = document.createElement('p')
+        const appearance = document.createElement('p')
+        
+        //assign properties to elements
+        img.src = characterInfo.image
+        name.innerText = characterInfo.name
+        gender.innerText = 'Gender: ' + characterInfo.gender
+        race.innerText = "Race: " + characterInfo.race
+        profession.innerText = 'Profession: ' + characterInfo.profession
+        nationality.innerText = 'Nationality: ' + characterInfo.nationality
+        appearance.innerText = "First Appearance: " + characterInfo.appearance
+        //append elements to the DOM tree
+        characterDiv.appendChild(fig)
+        fig.appendChild(img)
+        characterDiv.appendChild(name)
+        characterDiv.appendChild(gender)
+        characterDiv.appendChild(race)
+        characterDiv.appendChild(profession)
+        characterDiv.appendChild(nationality)
+        characterDiv.appendChild(appearance)
+    }
 
 //Event Listener 3: create a form that has a button filter characters
     //the form has:
