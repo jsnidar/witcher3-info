@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchCharacters(charactersUrl, charactersArr, startIndex, endIndex)
     handleSubmit()
 })
+
 function fetchCharacters(url, charactersArr, startIndex, endIndex) {
     fetch(url)
     .then(response => response.json())
@@ -31,27 +32,38 @@ function renderCharacterList (charactersArr, startIndex, endIndex) {
         if(i > endIndex) {
             break;
         }else{
-            const li = document.createElement('li')
-            ul.appendChild(li)
-            li.innerText = charactersArr[i].name
-            li.id = charactersArr[i].id
-            startIndex = i
-            //Event Listener 2: add an event listener to each li
-            li.addEventListener('click', event => handleCharLiClick(event))
+            renderOneLi(ul, i)
         }
     }
+    renderBackButton(ul)
+    renderNextButton(ul)
+    handleCharacterBackButton(charactersArr, startIndex, endIndex)
+    handleCharacterNextButton(charactersArr,startIndex,endIndex)
+}
+
+const renderOneLi = (ul, i) => {
+    const li = document.createElement('li')
+    ul.appendChild(li)
+    li.innerText = charactersArr[i].name
+    li.id = charactersArr[i].id
+    startIndex = i
+    //Event Listener 2: add an event listener to each li
+    li.addEventListener('click', event => handleCharLiClick(event))
+}
+const renderBackButton = (ul) => {
     const backButton = document.createElement('input')
     backButton.type = 'button'
     backButton.id = 'char-back-button'
     backButton.value = 'Previous Characters'
     ul.appendChild(backButton)
+}
+
+const renderNextButton = (ul) => {
     const nextButton = document.createElement('input')
     nextButton.type = 'button'
     nextButton.id = 'char-next-button'
     nextButton.value = 'Next Characters'
     ul.appendChild(nextButton)
-    handleCharacterBackButton(charactersArr, startIndex, endIndex)
-    handleCharacterNextButton(charactersArr,startIndex,endIndex)
 }
 
 //Event Listener 1: Render back and next buttons to scroll through pages of characters at the bottom of the list
@@ -80,40 +92,40 @@ function handleCharacterNextButton() {
 
 //when the li is clicked then the information about that character is rendered to the page in a section
     function handleCharLiClick(event) {
-        let liId = event.target.id
-        let characterInfo = {...charactersArr.find(({id}) => id === parseInt(liId))}
+        const liId = event.target.id
+        const characterInfo = {...charactersArr.find(({id}) => id === parseInt(liId))}
+        const {name, gender, race, profession, fappearance, image, nationality} = characterInfo
         const characterDiv = document.querySelector('#character-info')
         characterDiv.innerHTML = ''
-        debugger
         //create elements
         const fig = document.createElement('fig')
         const img = document.createElement('img')
-        const name = document.createElement('h4')
-        const gender = document.createElement('p')
-        const race = document.createElement('p')
-        const profession = document.createElement('p')
-        const nationality = document.createElement('p')
-        const appearance = document.createElement('p')
+        const nm = document.createElement('h4')
+        const gndr = document.createElement('p')
+        const rc = document.createElement('p')
+        const prof = document.createElement('p')
+        const nat = document.createElement('p')
+        const app = document.createElement('p')
         
         //assign properties to elements
-        img.src = characterInfo.image
+        img.src = image
         img.style.height = '50%'
         img.style.width = '50%'
-        name.innerText = characterInfo.name
-        gender.innerText = 'Gender: ' + characterInfo.gender
-        race.innerText = "Race: " + characterInfo.race
-        profession.innerText = 'Profession: ' + characterInfo.profession
-        nationality.innerText = 'Nationality: ' + characterInfo.nationality
-        appearance.innerText = "First Appearance: " + characterInfo.fappearance
+        nm.innerText = name
+        gndr.innerText = 'Gender: ' + gender
+        rc.innerText = "Race: " + race
+        prof.innerText = 'Profession: ' + profession
+        nat.innerText = 'Nationality: ' + nationality
+        app.innerText = "First Appearance: " + fappearance
         //append elements to the DOM tree
         characterDiv.appendChild(fig)
         fig.appendChild(img)
-        characterDiv.appendChild(name)
-        characterDiv.appendChild(gender)
-        characterDiv.appendChild(race)
-        characterDiv.appendChild(profession)
-        characterDiv.appendChild(nationality)
-        characterDiv.appendChild(appearance)
+        characterDiv.appendChild(nm)
+        characterDiv.appendChild(gndr)
+        characterDiv.appendChild(rc)
+        characterDiv.appendChild(prof)
+        characterDiv.appendChild(nat)
+        characterDiv.appendChild(app)
     }
 
 const createObjectOfCharacterAttributeValues = () => {
@@ -127,10 +139,11 @@ const createObjectOfCharacterAttributeValues = () => {
             //if the value at the key in the object within the charactersArr is not present in the array at that key in the characterAttributes object
             if(charKey !== 'id' && charKey !== 'name' && charKey !== 'image') {
                 let attValue = characterAttributes[charKey]
-                let attributeOpt =attValue.find(element => element === characterObj[charKey])
+                let objAtKey = characterObj[charKey]
+                let attributeOpt =attValue.find(element => element === objAtKey)
                 if (attributeOpt === undefined) {
                     //it will push the value at that key to the array located within the key with the same name
-                    attValue.push(characterObj[charKey])
+                    attValue.push(objAtKey)
                 }
             }
         }
