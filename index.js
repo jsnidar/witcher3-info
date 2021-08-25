@@ -13,13 +13,16 @@ function fetchCharacters(url) {
     .then(response => response.json())
     .then(characters => console.log(characters))
 }
+
 //Render a list on the left side of the screen of the first 30 characters
+
+
 //Event Listener 1: Render back and next buttons to scroll through pages of characters at the bottom of the list
 
 //Event Listener 2: add an event listener to each li, when the li is clicked then the information about that character is rendered to the page in a section
 
 //Event Listener 3: create a form that has a button filter characters
-    //when you click this button a form appears with:
+    //the form has:
         //a dropdown list of character traits to search within
             //options: name, gender, race, profession, nationality, appearance
         //text input where they can type in text and search for that attribute name
