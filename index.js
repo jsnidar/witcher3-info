@@ -9,7 +9,7 @@ let characterAttributes = {gender: [], race: [], profession: [], nationality: []
 //When DOM Content is loaded fetch characters from the Witcher Api
 document.addEventListener('DOMContentLoaded', () => {
     fetchCharacters(charactersUrl, charactersArr, startIndex, endIndex)
-    handleSubmit
+    handleSubmit()
 })
 function fetchCharacters(url, charactersArr, startIndex, endIndex) {
     fetch(url)
@@ -20,7 +20,7 @@ function fetchCharacters(url, charactersArr, startIndex, endIndex) {
     })
     .then(createObjectOfCharacterAttributeValues)
     .then(thisAtrributeDropDown())
-    .then(handleSubmit())
+   
 
 }
 
