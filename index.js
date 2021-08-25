@@ -4,18 +4,37 @@
 
 //When DOM Content is loaded fetch characters from the Witcher Api
 document.addEventListener('DOMContentLoaded', () => {
-    const charactersUrl = 'http://witcher3api.com/api/characters'
-    fetchCharacters(charactersUrl)
-})
+    const charactersUrl = `http://witcher3api.com/api/characters`  
+    let charactersArr = []
 
-function fetchCharacters(url) {
+    fetchCharacters(charactersUrl, charactersArr)
+})
+function fetchCharacters(url, charactersArr) {
     fetch(url)
     .then(response => response.json())
-    .then(characters => console.log(characters))
+    .then(characters => {
+        let startIndex = 0
+        characters.forEach(character => charactersArr.push(character))
+        renderCharacterList(charactersArr, startIndex)
+    })
 }
 
 //Render a list on the left side of the screen of the first 30 characters
-
+function renderCharacterList (charactersArr, startIndex) {
+    debugger
+    const endIndex = startIndex + 30
+    const ul = document.getElementById('characters-list')
+    for(let i = startIndex; i < charactersArr.length; i++) {
+        if(i > endIndex) {
+            break;
+        }else{
+            const li = document.createElement('li')
+            ul.appendChild(li)
+            li.innerText = charactersArr[i].name
+            li.id = charactersArr[i].id
+        }
+    }
+}
 
 //Event Listener 1: Render back and next buttons to scroll through pages of characters at the bottom of the list
 
