@@ -93,12 +93,14 @@ function handleCharacterNextButton() {
         
         //assign properties to elements
         img.src = characterInfo.image
+        img.style.height = '50%'
+        img.style.width = '50%'
         name.innerText = characterInfo.name
         gender.innerText = 'Gender: ' + characterInfo.gender
         race.innerText = "Race: " + characterInfo.race
         profession.innerText = 'Profession: ' + characterInfo.profession
         nationality.innerText = 'Nationality: ' + characterInfo.nationality
-        appearance.innerText = "First Appearance: " + characterInfo.appearance
+        appearance.innerText = "First Appearance: " + characterInfo.fappearance
         //append elements to the DOM tree
         characterDiv.appendChild(fig)
         fig.appendChild(img)
