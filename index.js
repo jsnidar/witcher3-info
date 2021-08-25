@@ -1,16 +1,15 @@
 
 //MVP
 let charactersArr = []
+const charactersUrl = `http://witcher3api.com/api/characters`  
 let startIndex = 0
 let endIndex = startIndex + 29
+let characterAttributes = {gender: [], race: [], profession: [], nationality: [], fappearance: []}
 
 //When DOM Content is loaded fetch characters from the Witcher Api
 document.addEventListener('DOMContentLoaded', () => {
-    const charactersUrl = `http://witcher3api.com/api/characters`  
-    
-
-
     fetchCharacters(charactersUrl, charactersArr, startIndex, endIndex)
+    handleSubmit
 })
 function fetchCharacters(url, charactersArr, startIndex, endIndex) {
     fetch(url)
@@ -19,6 +18,10 @@ function fetchCharacters(url, charactersArr, startIndex, endIndex) {
         characters.forEach(character => charactersArr.push(character))
         renderCharacterList(charactersArr, startIndex, endIndex)
     })
+    .then(createObjectOfCharacterAttributeValues)
+    .then(thisAtrributeDropDown())
+    .then(handleSubmit())
+
 }
 
 //Render a list on the left side of the screen of the first 30 characters
@@ -77,10 +80,11 @@ function handleCharacterNextButton() {
 
 //when the li is clicked then the information about that character is rendered to the page in a section
     function handleCharLiClick(event) {
-        const liId = event.target.id
-        const characterInfo = charactersArr[liId - 1]
-
+        let liId = event.target.id
+        let characterInfo = {...charactersArr.find(({id}) => id === parseInt(liId))}
         const characterDiv = document.querySelector('#character-info')
+        characterDiv.innerHTML = ''
+        debugger
         //create elements
         const fig = document.createElement('fig')
         const img = document.createElement('img')
@@ -112,23 +116,78 @@ function handleCharacterNextButton() {
         characterDiv.appendChild(appearance)
     }
 
+const createObjectOfCharacterAttributeValues = () => {
+    //use an arrow function to keep the same context throughout the function
+    //iterate through the charactersArr
+    for(let index in charactersArr) {
+        let characterObj = charactersArr[index]
+        //in each index it will iterate through each key in the character object
+        for (let charKey in characterObj) {
+            //for each key in that object find the key in characterAttributes with the same key
+            //if the value at the key in the object within the charactersArr is not present in the array at that key in the characterAttributes object
+            if(charKey !== 'id' && charKey !== 'name' && charKey !== 'image') {
+                let attValue = characterAttributes[charKey]
+                let attributeOpt =attValue.find(element => element === characterObj[charKey])
+                if (attributeOpt === undefined) {
+                    //it will push the value at that key to the array located within the key with the same name
+                    attValue.push(characterObj[charKey])
+                }
+            }
+        }
+    }
+}
+
 //Event Listener 3: create a form that has a button filter characters
     //the form has:
         //a dropdown list of character traits to search within
             //options: name, gender, race, profession, nationality, appearance
         //text input where they can type in text and search for that attribute name
+function thisAtrributeDropDown () {
+    const attType = document.querySelector('#type-dropdown')
+    attType.addEventListener('change', (e) => {
+        const attributeDropdown = document.querySelector('#attribute-dropdown')
+        attributeDropdown.innerHTML = ''
+        if(attType.value === 'all') {
+            charactersArr = []
+            startIndex = 0
+            endIndex = 29
+        fetchCharacters(charactersUrl, charactersArr, startIndex, endIndex)
+        }else{
+            //iterate through characterAttributes at the key that matches the value 
+            for (let att of characterAttributes[attType.value]) {
+                addOptiontoDropdown(att)
+            }
+        }
+    })
+}
 
-let characterAttributes = {gender: [], race: [], profession: [], nationality: [], fappearance: []}
-function createObjectOfCharacterAttributeValues () {
-    //iterate through the charactersArr
-        //in each index it will iterate through each key in the character object
-            //for each key in that object
-                //find the key in characterAttributes with the same key
-                    //if the value at the key in the object within the charactersArr is not present in the array at that key in the characterAttributes object
-                        //it will push the value at that key to the array located within the key with the same name
-                    //if the value at the key in the object within the charactersArr is present in the array at that key in the characterAttributes object
-                        //it will continue iterating through the object for that character
-            
+function addOptiontoDropdown (att) {
+    //create one element
+    const option = document.createElement('option')
+    //add properties
+    option.value = att
+    option.text = att
+    //append to DOM Tree
+    const attributeDropdown = document.querySelector('#attribute-dropdown')
+    attributeDropdown.appendChild(option)
+}
+
+function handleSubmit () {
+    filterForm = document.querySelector('#filter-form')
+    filterForm.addEventListener('submit', e => {
+        e.preventDefault()
+        const attType = document.querySelector('#type-dropdown')
+        const attributeDropdown = document.querySelector('#attribute-dropdown')
+        const attValue = attributeDropdown.value
+        //clear characters list
+        const list = document.querySelector('#characters-list')
+        list.innerHTML = ''
+        charactersArr = []
+        startIndex = 0
+        endIndex = 29
+        sortUrl = charactersUrl + '/' + attType.value + '/' + attValue 
+        fetchCharacters(sortUrl, charactersArr, startIndex, endIndex)
+    })
 }
 
 
