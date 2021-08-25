@@ -1,8 +1,18 @@
 
 //MVP
 
-//When DOM Content is loaded fetch characters from the Witcher Api
 
+//When DOM Content is loaded fetch characters from the Witcher Api
+document.addEventListener('DOMContentLoaded', () => {
+    const charactersUrl = 'http://witcher3api.com/api/characters'
+    fetchCharacters(charactersUrl)
+})
+
+function fetchCharacters(url) {
+    fetch(url)
+    .then(response => response.json())
+    .then(characters => console.log(characters))
+}
 //Render a list on the left side of the screen of the first 30 characters
 //Event Listener 1: Render back and next buttons to scroll through pages of characters at the bottom of the list
 
