@@ -8,12 +8,16 @@ let endIndex = startIndex + 29
 let characterAttributes = {gender: [], race: [], profession: [], nationality: [], fappearance: []}
 
 //When DOM Content is loaded fetch characters from the Witcher Api
-document.addEventListener('DOMContentLoaded', () => {
+const whenDomLoads = () => {
+    document.addEventListener('DOMContentLoaded', () => {
     fetchCharacters(charactersUrl, charactersArr, startIndex, endIndex)
     handleSubmit()
-})
+    })
+}
 
-function fetchCharacters(url, charactersArr, startIndex, endIndex) {
+whenDomLoads()
+
+const fetchCharacters = (url, charactersArr) => {
     fetch(url)
     .then(response => response.json())
     .then(characters => {
@@ -38,8 +42,8 @@ function renderCharacterList (charactersArr, startIndex, endIndex) {
     }
     renderBackButton(ul)
     renderNextButton(ul)
-    handleCharacterBackButton(charactersArr, startIndex, endIndex)
-    handleCharacterNextButton(charactersArr,startIndex,endIndex)
+    handleCharacterBackButton()
+    handleCharacterNextButton()
 }
 
 const renderOneLi = (array, ul, i) => {
@@ -68,7 +72,7 @@ const renderNextButton = (ul) => {
 }
 
 //Event Listener 1: Render back and next buttons to scroll through pages of characters at the bottom of the list
-function handleCharacterBackButton() {
+const handleCharacterBackButton = () => {
     backButton = document.querySelector('#char-back-button')
     backButton.addEventListener('click', (event) => {
         if(startIndex >= 30) {
@@ -80,12 +84,12 @@ function handleCharacterBackButton() {
         }
     })
 }
-function handleCharacterNextButton() {
+const handleCharacterNextButton = () => {
     nextButton = document.querySelector('#char-next-button')
     nextButton.addEventListener('click', (event) => {
+        debugger
         const ul = document.getElementById('characters-list')
         ul.innerHTML = ''
-        startIndex += 30
         endIndex += 30
         renderCharacterList(charactersArr,startIndex,endIndex)
     })
@@ -164,8 +168,7 @@ function thisAtrributeDropDown () {
         if(attType.value === 'all') {
             charactersArr = []
             startIndex = 0
-            endIndex = 29
-        fetchCharacters(charactersUrl, charactersArr, startIndex, endIndex)
+        fetchCharacters(charactersUrl, charactersArr)
         }else{
             //iterate through characterAttributes at the key that matches the value 
             for (let att of characterAttributes[attType.value]) {
@@ -199,17 +202,22 @@ function handleSubmit () {
         if(attValue === 'Male') {
             //the API returns all genders when you fetch the male gender, so I had to do this instead of the rendering process I used below. 
             const males = charactersArr.filter(({gender}) => gender === 'Male')
+            charactersArr = males
             debugger
             list.innerHTML = ''
             startIndex = 0
-            endIndex = 29
-            renderCharacterList(males, startIndex, endIndex)
+            renderCharacterList(charactersArr, startIndex, endIndex)
         }else if(attValue !== '') {
             list.innerHTML = ''
             charactersArr = []
             startIndex = 0
-            endIndex = 29
             sortUrl = charactersUrl + '/' + attType.value + '/' + attValue 
+        fetchCharacters(sortUrl, charactersArr, startIndex, endIndex)
+        }else if(attValue === '') {
+            list.innerHTML = ''
+            charactersArr = []
+            startIndex = 0
+            sortUrl = charactersUrl 
         fetchCharacters(sortUrl, charactersArr, startIndex, endIndex)
         }  
     })
