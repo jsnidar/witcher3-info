@@ -107,6 +107,7 @@ const handleCharacterNextButton = () => {
         characterDiv.innerHTML = ''
         //create elements
         const fig = document.createElement('fig')
+        const figCaption = document.createElement('figcaption')
         const img = document.createElement('img')
         const nm = document.createElement('h4')
         const gndr = document.createElement('p')
@@ -116,9 +117,11 @@ const handleCharacterNextButton = () => {
         const app = document.createElement('p')
         
         //assign properties to elements
+        
         img.src = image
-        img.style.height = '50%'
-        img.style.width = '50%'
+        img.className = 'img-fluid'
+        img.alt = 'Responsive image'
+        
         nm.innerText = name
         gndr.innerText = 'Gender: ' + gender
         rc.innerText = "Race: " + race
@@ -128,12 +131,13 @@ const handleCharacterNextButton = () => {
         //append elements to the DOM tree
         characterDiv.appendChild(fig)
         fig.appendChild(img)
-        characterDiv.appendChild(nm)
-        characterDiv.appendChild(gndr)
-        characterDiv.appendChild(rc)
-        characterDiv.appendChild(prof)
-        characterDiv.appendChild(nat)
-        characterDiv.appendChild(app)
+        fig.appendChild(figCaption)
+        figCaption.appendChild(nm)
+        figCaption.appendChild(gndr)
+        figCaption.appendChild(rc)
+        figCaption.appendChild(prof)
+        figCaption.appendChild(nat)
+        figCaption.appendChild(app)
     }
 
 const createObjectOfCharacterAttributeValues = () => {
