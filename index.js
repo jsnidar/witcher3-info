@@ -4,13 +4,14 @@ let charactersArr = []
 const charactersUrl = `http://witcher3api.com/api/characters`  
 //the API wouldn't let me set a limit on the records it returns because of CORS so I had to create an array and use start and end indexes to limit the number of list items I display
 let startIndex = 0
-let endIndex = startIndex + 29
+let endIndex = 29
+let getEndIndex = () => endIndex = startIndex + 29
 let characterAttributes = {gender: [], race: [], profession: [], nationality: [], fappearance: []}
 
 //When DOM Content is loaded fetch characters from the Witcher Api
 const whenDomLoads = () => {
     document.addEventListener('DOMContentLoaded', () => {
-    fetchCharacters(charactersUrl, charactersArr, startIndex, endIndex)
+    fetchCharacters(charactersUrl, charactersArr)
     handleSubmit()
     })
 }
@@ -22,7 +23,7 @@ const fetchCharacters = (url, charactersArr) => {
     .then(response => response.json())
     .then(characters => {
         characters.forEach(character => charactersArr.push(character))
-        renderCharacterList(charactersArr, startIndex, endIndex)
+        renderCharacterList(charactersArr)
     })
     .then(createObjectOfCharacterAttributeValues)
     .then(thisAtrributeDropDown())
@@ -31,7 +32,8 @@ const fetchCharacters = (url, charactersArr) => {
 }
 
 //Render a list on the left side of the screen of the first 30 characters
-function renderCharacterList (charactersArr, startIndex, endIndex) {
+function renderCharacterList () {
+    getEndIndex()
     const ul = document.getElementById('characters-list')
     for(let i = startIndex; i < charactersArr.length; i++) {
         if(i > endIndex) {
@@ -40,6 +42,7 @@ function renderCharacterList (charactersArr, startIndex, endIndex) {
             renderOneLi(charactersArr, ul, i)
         }
     }
+    console.log(startIndex)
     renderBackButton(ul)
     renderNextButton(ul)
     handleCharacterBackButton()
@@ -75,12 +78,13 @@ const renderNextButton = (ul) => {
 const handleCharacterBackButton = () => {
     backButton = document.querySelector('#char-back-button')
     backButton.addEventListener('click', (event) => {
-        if(startIndex >= 30) {
+        if(startIndex > 57) {
+            debugger
             const ul = document.getElementById('characters-list')
             ul.innerHTML = ''
-            startIndex -= 30
-            endIndex -= 30
-            renderCharacterList(charactersArr,startIndex,endIndex)
+            startIndex -= 58
+            getEndIndex()
+            renderCharacterList(charactersArr)
         }
     })
 }
@@ -90,7 +94,6 @@ const handleCharacterNextButton = () => {
         debugger
         const ul = document.getElementById('characters-list')
         ul.innerHTML = ''
-        endIndex += 30
         renderCharacterList(charactersArr,startIndex,endIndex)
     })
 }
