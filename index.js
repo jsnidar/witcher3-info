@@ -4,8 +4,8 @@ let charactersArr = []
 const charactersUrl = `http://witcher3api.com/api/characters`  
 //the API wouldn't let me set a limit on the records it returns because of CORS so I had to create an array and use start and end indexes to limit the number of list items I display
 let startIndex = 0
-let endIndex = 29
-let getEndIndex = () => endIndex = startIndex + 29
+let endIndex = 30
+let getEndIndex = () => endIndex = startIndex + 30
 let characterAttributes = {gender: [], race: [], profession: [], nationality: [], fappearance: []}
 
 //When DOM Content is loaded fetch characters from the Witcher Api
@@ -27,8 +27,6 @@ const fetchCharacters = (url, charactersArr) => {
     })
     .then(createObjectOfCharacterAttributeValues)
     .then(thisAtrributeDropDown())
-   
-
 }
 
 //Render a list on the left side of the screen of the first 30 characters
@@ -78,11 +76,18 @@ const renderNextButton = (ul) => {
 const handleCharacterBackButton = () => {
     backButton = document.querySelector('#char-back-button')
     backButton.addEventListener('click', (event) => {
-        if(startIndex > 57) {
-            debugger
+        debugger
+        event.preventDefault()
+        if(startIndex -30 > 29) {
             const ul = document.getElementById('characters-list')
             ul.innerHTML = ''
-            startIndex -= 58
+            startIndex -= 60
+            getEndIndex()
+            renderCharacterList(charactersArr)
+        }else if(startIndex - 30 > 0) {
+            const ul = document.getElementById('characters-list')
+            ul.innerHTML = ''
+            startIndex = 0
             getEndIndex()
             renderCharacterList(charactersArr)
         }
@@ -92,9 +97,13 @@ const handleCharacterNextButton = () => {
     nextButton = document.querySelector('#char-next-button')
     nextButton.addEventListener('click', (event) => {
         debugger
-        const ul = document.getElementById('characters-list')
-        ul.innerHTML = ''
-        renderCharacterList(charactersArr,startIndex,endIndex)
+        if(startIndex < charactersArr.length -1) {
+            event.preventDefault()
+            getEndIndex()
+            const ul = document.getElementById('characters-list')
+            ul.innerHTML = ''
+            renderCharacterList(charactersArr,startIndex,endIndex)
+        }
     })
 }
 
