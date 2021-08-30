@@ -6,6 +6,9 @@
 
 Witcher 3 Character Information is a web application written in Javascript, HTML5, CSS3 and Bootstrap the displays information about characters in the Witcher 3: Wild Hunt video game. Data is fetched from the <a href="http://witcher3api.com/">Witcher 3 API</a>. 
 
+<a href='https://drive.google.com/file/d/1lF1gdAAodYcylAO5Q5QG2Czk0a1ABBqZ/view'>Link to Video Description<a>
+
+
 ## Usage
 
 ### Filter Results
