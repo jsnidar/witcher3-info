@@ -1,14 +1,11 @@
 
-//MVP
 let charactersArr = []
 const charactersUrl = `http://witcher3api.com/api/characters`  
-//the API wouldn't let me set a limit on the records it returns because of CORS so I had to create an array and use start and end indexes to limit the number of list items I display
 let startIndex = 0
 let endIndex = 30
 let getEndIndex = () => endIndex = startIndex + 30
 let characterAttributes = {gender: [], race: [], profession: [], nationality: [], fappearance: []}
 
-//When DOM Content is loaded fetch characters from the Witcher Api
 const whenDomLoads = () => {
     document.addEventListener('DOMContentLoaded', () => {
     fetchCharacters(charactersUrl, charactersArr)
@@ -18,7 +15,7 @@ const whenDomLoads = () => {
 
 whenDomLoads()
 
-const fetchCharacters = (url, charactersArr) => {
+const fetchCharacters = (url) => {
     fetch(url)
     .then(response => response.json())
     .then(characters => {
@@ -29,7 +26,6 @@ const fetchCharacters = (url, charactersArr) => {
     .then(thisAtrributeDropDown())
 }
 
-//Render a list on the left side of the screen of the first 30 characters
 function renderCharacterList () {
     getEndIndex()
     const ul = document.getElementById('characters-list')
@@ -40,7 +36,6 @@ function renderCharacterList () {
             renderOneLi(charactersArr, ul, i)
         }
     }
-    console.log(startIndex)
     renderBackButton(ul)
     renderNextButton(ul)
     handleCharacterBackButton()
@@ -53,7 +48,6 @@ const renderOneLi = (array, ul, i) => {
     li.innerText = array[i].name
     li.id = array[i].id
     startIndex = i
-    //Event Listener 2: add an event listener to each li
     li.addEventListener('click', event => handleCharLiClick(event))
 }
 const renderBackButton = (ul) => {
@@ -72,11 +66,9 @@ const renderNextButton = (ul) => {
     ul.appendChild(nextButton)
 }
 
-//Event Listener 1: Render back and next buttons to scroll through pages of characters at the bottom of the list
 const handleCharacterBackButton = () => {
     backButton = document.querySelector('#char-back-button')
     backButton.addEventListener('click', (event) => {
-        debugger
         event.preventDefault()
         if(startIndex -30 > 29) {
             const ul = document.getElementById('characters-list')
@@ -107,14 +99,12 @@ const handleCharacterNextButton = () => {
     })
 }
 
-//when the li is clicked then the information about that character is rendered to the page in a section
     function handleCharLiClick(event) {
         const liId = event.target.id
-        const characterInfo = {...charactersArr.find(({id}) => id === parseInt(liId))}
+        const characterInfo = charactersArr.find(({id}) => id === parseInt(liId))
         const {name, gender, race, profession, fappearance, image, nationality} = characterInfo
         const characterDiv = document.querySelector('#character-info')
         characterDiv.innerHTML = ''
-        //create elements
         const fig = document.createElement('fig')
         const figCaption = document.createElement('figcaption')
         const img = document.createElement('img')
@@ -124,20 +114,17 @@ const handleCharacterNextButton = () => {
         const prof = document.createElement('p')
         const nat = document.createElement('p')
         const app = document.createElement('p')
-        
-        //assign properties to elements
-        
+                
         img.src = image
         img.className = 'img-fluid'
         img.alt = 'Responsive image'
-        
         nm.innerText = name
         gndr.innerText = 'Gender: ' + gender
         rc.innerText = "Race: " + race
         prof.innerText = 'Profession: ' + profession
         nat.innerText = 'Nationality: ' + nationality
         app.innerText = "First Appearance: " + fappearance
-        //append elements to the DOM tree
+
         characterDiv.appendChild(fig)
         fig.appendChild(img)
         fig.appendChild(figCaption)
@@ -150,20 +137,14 @@ const handleCharacterNextButton = () => {
     }
 
 const createObjectOfCharacterAttributeValues = () => {
-    //use an arrow function to keep the same context throughout the function
-    //iterate through the charactersArr
     for(let index in charactersArr) {
         let characterObj = charactersArr[index]
-        //in each index it will iterate through each key in the character object
         for (let charKey in characterObj) {
-            //for each key in that object find the key in characterAttributes with the same key
-            //if the value at the key in the object within the charactersArr is not present in the array at that key in the characterAttributes object
             if(charKey !== 'id' && charKey !== 'name' && charKey !== 'image') {
                 let attValue = characterAttributes[charKey]
                 let objAtKey = characterObj[charKey]
                 let attributeOpt =attValue.find(element => element === objAtKey)
                 if (attributeOpt === undefined) {
-                    //it will push the value at that key to the array located within the key with the same name
                     attValue.push(objAtKey)
                 }
             }
@@ -171,11 +152,6 @@ const createObjectOfCharacterAttributeValues = () => {
     }
 }
 
-//Event Listener 3: create a form that has a button filter characters
-    //the form has:
-        //a dropdown list of character traits to search within
-            //options: name, gender, race, profession, nationality, appearance
-        //text input where they can type in text and search for that attribute name
 function thisAtrributeDropDown () {
     const attType = document.querySelector('#type-dropdown')
     attType.addEventListener('change', (e) => {
@@ -186,7 +162,6 @@ function thisAtrributeDropDown () {
             startIndex = 0
         fetchCharacters(charactersUrl, charactersArr)
         }else{
-            //iterate through characterAttributes at the key that matches the value 
             for (let att of characterAttributes[attType.value]) {
                 addOptiontoDropdown(att)
             }
@@ -195,12 +170,9 @@ function thisAtrributeDropDown () {
 }
 
 function addOptiontoDropdown (att) {
-    //create one element
     const option = document.createElement('option')
-    //add properties
     option.value = att
     option.text = att
-    //append to DOM Tree
     const attributeDropdown = document.querySelector('#attribute-dropdown')
     attributeDropdown.appendChild(option)
 }
@@ -213,28 +185,25 @@ function handleSubmit () {
         const attType = document.querySelector('#type-dropdown')
         const attributeDropdown = document.querySelector('#attribute-dropdown')
         const attValue = attributeDropdown.value
-        //clear characters list
         const list = document.querySelector('#characters-list')
         if(attValue === 'Male') {
-            //the API returns all genders when you fetch the male gender, so I had to do this instead of the rendering process I used below. 
             const males = charactersArr.filter(({gender}) => gender === 'Male')
             charactersArr = males
-            debugger
             list.innerHTML = ''
             startIndex = 0
-            renderCharacterList(charactersArr, startIndex, endIndex)
+            renderCharacterList(charactersArr)
         }else if(attValue !== '') {
             list.innerHTML = ''
             charactersArr = []
             startIndex = 0
             sortUrl = charactersUrl + '/' + attType.value + '/' + attValue 
-        fetchCharacters(sortUrl, charactersArr, startIndex, endIndex)
+            fetchCharacters(sortUrl)
         }else if(attValue === '') {
             list.innerHTML = ''
             charactersArr = []
             startIndex = 0
             sortUrl = charactersUrl 
-        fetchCharacters(sortUrl, charactersArr, startIndex, endIndex)
+            fetchCharacters(sortUrl)
         }  
     })
 }
