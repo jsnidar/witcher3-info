@@ -6,14 +6,10 @@ let endIndex = 30
 let getEndIndex = () => endIndex = startIndex + 30
 let characterAttributes = {gender: [], race: [], profession: [], nationality: [], fappearance: []}
 
-const whenDomLoads = () => {
-    document.addEventListener('DOMContentLoaded', () => {
-    fetchCharacters(charactersUrl, charactersArr)
+document.addEventListener('DOMContentLoaded', () => {
+    fetchCharacters(charactersUrl)
     handleSubmit()
     })
-}
-
-whenDomLoads()
 
 const fetchCharacters = (url) => {
     fetch(url)
@@ -114,6 +110,8 @@ const handleCharacterNextButton = () => {
         const prof = document.createElement('p')
         const nat = document.createElement('p')
         const app = document.createElement('p')
+        const likesBtn = document.createElement('button')
+        let likesCnt = 0
                 
         img.src = image
         img.className = 'img-fluid'
@@ -124,6 +122,8 @@ const handleCharacterNextButton = () => {
         prof.innerText = 'Profession: ' + profession
         nat.innerText = 'Nationality: ' + nationality
         app.innerText = "First Appearance: " + fappearance
+        likesBtn.innerText = `Likes: ` + likesCnt
+        likesBtn.id = 'likesBtn'
 
         characterDiv.appendChild(fig)
         fig.appendChild(img)
@@ -134,7 +134,14 @@ const handleCharacterNextButton = () => {
         figCaption.appendChild(prof)
         figCaption.appendChild(nat)
         figCaption.appendChild(app)
+        characterDiv.appendChild(likesBtn)
+        likesBtn.addEventListener('click', (e) => {
+            likesCnt+= 1
+            likesBtn.innerText = `Likes: ${likesCnt}`
+        })
     }
+
+
 
 const createObjectOfCharacterAttributeValues = () => {
     for(let index in charactersArr) {
@@ -208,6 +215,10 @@ function handleSubmit () {
     })
 }
 
+//render likes button to the character information div
+    //innerText is likes with a number
+    //number starts at 0
+    //number increments when clicked
 
 //Stretch
 
